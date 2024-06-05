@@ -6,7 +6,6 @@ on:
       - "main"
   workflow_dispatch:
 
-
 jobs:
   Play:
     runs-on: ubuntu-latest
@@ -14,20 +13,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Create Entrypoint
+      - name: DotNetBuild
+        uses: snigdhasjg/firebase-server-demo/.github/actions/DockerRun@main
         run: |
-          echo "#!/bin/bash
-
           dotnet restore firebase-server-demo.csproj
           dotnet publish firebase-server-demo.csproj -c Release -o ./publish
 
           ls -ltra publish
-          " > entrypoint.sh
-
-          chmod +x entrypoint.sh
-
-      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-docker-hub-action
-      - name: DotNetBuild
-        uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
-        with:
-          entrypoint: ./entrypoint.sh

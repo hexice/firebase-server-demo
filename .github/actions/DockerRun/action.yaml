@@ -1,0 +1,50 @@
+name: 'Terraform Create on TFC'
+description: 'Runs terraform plan on terraform cloud'
+
+inputs:
+  image:
+    description: name of the docker image
+    required: true
+  version:
+    description: version/tag of the docker image
+    required: true
+  exectable:
+    description: executable to run within docker 
+    required: false
+    default: "/bin/sh"
+  fail_on_error:
+    description: Should the pipeline fail on error
+    required: false
+    default: "true"
+  inline_script:
+    description: script contains to run
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Entrypoint
+      shell: bash
+      run: |
+        touch entrypoint.sh
+        chmod +x entrypoint.sh
+        
+        echo '#!${{ inputs.exectable }}' >> entrypoint.sh
+        if [[ '${{ inputs.fail_on_error }}' == 'true' ]]; then
+          echo 'set -e' >> entrypoint.sh
+        fi
+        
+        cat >> entrypoint.sh << EOF
+        ${{ inputs.inline_script }}
+        EOF
+        
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-docker-hub-action
+    - name: Docker run
+      uses: docker://${{ inputs.image }}:${{ inputs.version }}
+      with:
+        entrypoint: ./entrypoint.sh
+
+    - name: Cleanup
+      shell: bash
+      run: |
+        rm entrypoint.sh

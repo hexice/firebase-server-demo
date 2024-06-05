@@ -19,9 +19,9 @@ jobs:
           echo "#!/bin/bash
 
           dotnet restore firebase-server-demo.csproj
-          dotnet publish firebase-server-demo.csproj -c Release
+          dotnet publish firebase-server-demo.csproj -c Release -o ./publish
 
-          ls -ltra bin
+          ls -ltra publish
           " > entrypoint.sh
 
           chmod +x entrypoint.sh

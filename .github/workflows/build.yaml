@@ -15,8 +15,11 @@ jobs:
         
       - name: DotNetBuild
         uses: snigdhasjg/firebase-server-demo/.github/actions/DockerRun@main
-        run: |
-          dotnet restore firebase-server-demo.csproj
-          dotnet publish firebase-server-demo.csproj -c Release -o ./publish
+        with:
+          image: mcr.microsoft.com/dotnet/sdk
+          version: 7.0-jammy
+          inline_script: |
+            dotnet restore firebase-server-demo.csproj
+            dotnet publish firebase-server-demo.csproj -c Release -o ./publish
 
-          ls -ltra publish
+            ls -ltra publish

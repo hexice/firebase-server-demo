@@ -13,12 +13,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
+      - name: Create Entrypoint
+        run: |
+          echo "#!/bin/bash
+
+          dotnet restore firebase-server-demo.csproj
+          dotnet publish firebase-server-demo.csproj -c Release
+
+          ls -ltra bin
+          " > entrypoint.sh
+
+          chmod +x entrypoint.sh
 
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-docker-hub-action
       - name: DotNetBuild
         uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
         with:
-          args: >
-            dotnet restore firebase-server-demo.csproj &&
-            dotnet publish firebase-server-demo.csproj -c Release &&
-            ls -ltra bin
+          entrypoint: entrypoint.sh

@@ -1,0 +1,25 @@
+name: playground
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+
+jobs:
+  Play:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-docker-hub-action
+      - name: DotNetBuild
+        uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
+        with:
+          command: |
+            dotnet restore firebase-server-demo.csproj
+            dotnet publish firebase-server-demo.csproj -c Release
+
+            ls -ltra bin

@@ -18,7 +18,7 @@ jobs:
       - name: DotNetBuild
         uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
         with:
-          entrypoint: /bin/bash -c
+          entrypoint: /bin/bash
           args: |
             dotnet restore firebase-server-demo.csproj
             dotnet publish firebase-server-demo.csproj -c Release

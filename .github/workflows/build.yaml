@@ -17,8 +17,10 @@ jobs:
       # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-docker-hub-action
       - name: DotNetBuild
         uses: docker://mcr.microsoft.com/dotnet/sdk:7.0
-        run: |
-          dotnet restore firebase-server-demo.csproj
-          dotnet publish firebase-server-demo.csproj -c Release
+        with:
+          entrypoint: /bin/bash -c
+          args: |
+            dotnet restore firebase-server-demo.csproj
+            dotnet publish firebase-server-demo.csproj -c Release
 
-          ls -ltra bin
+            ls -ltra bin
